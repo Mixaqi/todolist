@@ -1,6 +1,21 @@
-{% extends 'todoapp/layout.html' %}
+{% extends "todoapp/layout.html" %}
 
 {% block content %}
+{% for todo in todo_list %}
+<div class="ui segment">
+    <p class="ui big header">N{{ todo.id }} {{todo.title}}</p>
 
+    {% if todo.is_complete == False %}
+    <span class="ui gray label">Не завершено</span>
+    <a class="ui primary basic button" href="{% url 'update' todo.id %}">Закрыть</a>
+
+    {% else %}
+    <span class="ui green label">Завершено</span>
+    <a class="ui blue button" href="{% url 'update' todo_id=todo.id %}">Открыть</a>
+    {% endif %}
+    <a class="ui negative basic button" href="{% url 'delete' todo_id=todo.id %}">Удалить</a>
+
+</div>
+{% endfor %}
 
 {% endblock %}
