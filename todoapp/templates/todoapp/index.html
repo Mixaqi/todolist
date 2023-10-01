@@ -1,34 +1,30 @@
 {% extends "todoapp/layout.html" %}
 
 {% block content %}
-
-<div style = "margin-top: 50 px;" class = "ui.container">
+<div style="margin-top: 50px;" class="ui container">
     <h1>Менеджер задач</h1>
-    <form class = "ui form" action="{% url 'add' %}" method = "post"></form>
+    <form class="ui form" action="{% url 'add' %}" method="post">
         {% csrf_token %}
-        <div class = "field">
+        <div class="field">
             <label> Новая задача</label>
-            <input type = "text" name = "title" placeholder="Введите название задачи"><br>
+            <input type="text" name="title" placeholder="Введите название задачи"><br>
         </div>
-        <button class = "ui teal basic button" type = "submit">Добавить</button>
+        <button class="ui teal basic button" type="submit">Добавить</button>
     </form>
+
+    {% for todo in todo_list %}
+    <div class="ui segment">
+        <p class="ui big header">N{{ todo.id }} {{ todo.title }}</p>
+
+        {% if not todo.is_complete %}
+        <span class="ui gray label">Не завершено</span>
+        <a class="ui primary basic button" href="{% url 'update' todo.id %}">Закрыть</a>
+        {% else %}
+        <span class="ui green label">Завершено</span>
+        <a class="ui blue button" href="{% url 'update' todo.id %}">Открыть</a>
+        {% endif %}
+        <a class="ui negative basic button" href="{% url 'delete' todo.id %}">Удалить</a>
+    </div>
+    {% endfor %}
 </div>
-
-{% for todo in todo_list %}
-<div class="ui segment">
-    <p class="ui big header">N{{ todo.id }} {{todo.title}}</p>
-
-    {% if todo.is_complete == False %}
-    <span class="ui gray label">Не завершено</span>
-    <a class="ui primary basic button" href="{% url 'update' todo.id %}">Закрыть</a>
-
-    {% else %}
-    <span class="ui green label">Завершено</span>
-    <a class="ui blue button" href="{% url 'update' todo_id=todo.id %}">Открыть</a>
-    {% endif %}
-    <a class="ui negative basic button" href="{% url 'delete' todo_id=todo.id %}">Удалить</a>
-
-</div>
-{% endfor %}
-
 {% endblock %}
