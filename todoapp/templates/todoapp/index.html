@@ -1,8 +1,16 @@
 {% extends "todoapp/layout.html" %}
 
 {% block content %}
+<div class="ui three buttons">
+    <button class="ui button">Export to PDF</button>
+    <button class="ui button">Export to Excel</button>
+    <button class="ui button">Export CSV</button>
+  </div>
+
 <div style="margin-top: 50px;" class="ui container">
     <h1>Менеджер задач</h1>
+    
+    <!-- Добавление новой задачи -->
     <form class="ui form" action="{% url 'add' %}" method="post">
         {% csrf_token %}
         <div class="field">
