@@ -4,8 +4,9 @@
 <div class="ui three buttons">
     <button class="ui button">Export to PDF</button>
     <button class="ui button">Export to Excel</button>
-    <a href = "{% url 'export_csv' %}"><button class="ui button">Export CSV</button></a>
-  </div>
+    <button class="ui button"><a href="{% url 'export_csv' %}">Export CSV</a></button>
+</div>
+
 
 <div style="margin-top: 50px;" class="ui container">
     <h1>Менеджер задач</h1>
