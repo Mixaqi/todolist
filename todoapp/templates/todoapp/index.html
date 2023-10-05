@@ -1,8 +1,7 @@
 {% extends "todoapp/layout.html" %}
 
 {% block content %}
-<div class="ui three buttons">
-    <button class="ui button">Export to PDF</button>
+<div class="ui two buttons">
     <button class="ui button"><a href="{% url 'export_excel' %}">Export Excel</a></button>
     <button class="ui button"><a href="{% url 'export_csv' %}">Export CSV</a></button>
 </div>
