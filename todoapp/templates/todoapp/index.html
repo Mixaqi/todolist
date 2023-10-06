@@ -1,10 +1,17 @@
 {% extends "todoapp/layout.html" %}
 
 {% block content %}
+<script>
+    var excelUrl = "{% url 'export_excel' %}";
+    var csvUrl = "{% url 'export_csv' %}";
+</script>
+
 <div class="ui two buttons">
-    <button class="ui button"><a href="{% url 'export_excel' %}">Export Excel</a></button>
-    <button class="ui button"><a href="{% url 'export_csv' %}">Export CSV</a></button>
+    <button class="ui button" onclick="window.location.href = excelUrl;">Export Excel</button>
+    <button class="ui button" onclick="window.location.href = csvUrl;">Export CSV</button>
 </div>
+
+
 
 
 <div style="margin-top: 50px;" class="ui container">

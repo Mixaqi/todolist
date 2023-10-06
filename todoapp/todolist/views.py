@@ -29,8 +29,9 @@ def index(request: HttpRequest) -> HttpResponse:
 @require_http_methods(["POST"])
 def add(request: HttpRequest) -> HttpResponse:
     title = request.POST["title"]
-    todo = ToDo(title=title)
-    todo.save()
+    if len(title) !=0:
+        todo = ToDo(title=title)
+        todo.save()
     return redirect("index")
 
 
