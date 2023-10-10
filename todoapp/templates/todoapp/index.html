@@ -11,13 +11,9 @@
     <button class="ui button" onclick="window.location.href = csvUrl;">Export CSV</button>
 </div>
 
-
-
-
 <div style="margin-top: 50px;" class="ui container">
     <h1>Менеджер задач</h1>
 
-    <!-- Добавление новой задачи -->
     <form class="ui form" action="{% url 'add' %}" method="post">
         {% csrf_token %}
         <div class="field">
@@ -29,7 +25,8 @@
 
     {% for todo in todo_list %}
     <div class="ui segment">
-        <p class="ui big header">N{{ todo.id }} {{ todo.title }}</p>
+        <p class="ui big header">{{ todo.title }}</p>
+
 
         {% if not todo.is_complete %}
         <span class="ui gray label">Не завершено</span>

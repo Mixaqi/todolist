@@ -29,7 +29,7 @@ def index(request: HttpRequest) -> HttpResponse:
 @require_http_methods(["POST"])
 def add(request: HttpRequest) -> HttpResponse:
     title = request.POST["title"]
-    if len(title) !=0:
+    if len(title) != 0:
         todo = ToDo(title=title)
         todo.save()
     return redirect("index")
@@ -50,12 +50,12 @@ def delete(request: HttpRequest, todo_id: int) -> HttpResponse:
 
 def export_csv(request: HttpRequest) -> HttpResponse:
     response = HttpResponse(content_type="text/csv")
-    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    timestamp = datetime.datetime.now().strftime("%Y_%m_%d %H:%M:%S")
     response[
         "Content-Disposition"
     ] = f"attachment; filename=my_todolist_{timestamp}.csv"
     writer = csv.writer(response)
-    writer.writerow(["title", "is_complete"])
+    writer.writerow(["Задание", "Готовность"])
     affairs = ToDo.objects.all()  # Убрано условие фильтрации по owner
     for affair in affairs:
         writer.writerow([affair.title, affair.is_complete])
@@ -64,7 +64,7 @@ def export_csv(request: HttpRequest) -> HttpResponse:
 
 def export_excel(request: HttpRequest) -> HttpResponse:
     response = HttpResponse(content_type="application/ms_excel")
-    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    timestamp = datetime.datetime.now().strftime("%Y_%m_%d %H:%M:%S")
     response[
         "Content-Disposition"
     ] = f"attachment; filename=my_todolist_{timestamp}.xls"
@@ -73,7 +73,7 @@ def export_excel(request: HttpRequest) -> HttpResponse:
     row_num = 0
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
-    columns = ["title", "is_complete"]
+    columns = ["Задание", "Готовность"]
 
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
