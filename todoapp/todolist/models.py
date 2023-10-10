@@ -19,7 +19,7 @@ class ToDo(models.Model):
     def __str__(self) -> str:
         return self.title
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
         if not self.token:
             hash_object = hashlib.sha256(self.title.encode())
             self.token = hash_object.hexdigest()
