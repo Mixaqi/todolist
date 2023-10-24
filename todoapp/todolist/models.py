@@ -1,16 +1,13 @@
 from __future__ import annotations
 
 from django.db import models
-import hashlib
-
 
 
 class ToDo(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField("Название задания", max_length=500)
-    is_complete = models.BooleanField("Завершено", default=False)
-    token = models.CharField("Токен", max_length=64, unique=True)
-
+    user_id = models.ForeignKey('User', on_delete=models.CASCADE)
+    attached_files = models.ManyToManyField('AttachedFile')
 
     class Meta:
         verbose_name = "Задание"
@@ -19,8 +16,19 @@ class ToDo(models.Model):
     def __str__(self) -> str:
         return self.title
 
-    def save(self, *args, **kwargs) -> None:
-        if not self.token:
-            hash_object = hashlib.sha256(self.title.encode())
-            self.token = hash_object.hexdigest()
-        super().save(*args, **kwargs)
+class Project(models.Model):
+    id = models.AutoField(primary_key=True)
+    task_id = models.ForeignKey('Task', on_delete=models.CASCADE)
+    user_id = models.ForeignKey('User', on_delete=models.CASCADE)
+
+class User(models.Model):
+    uuid = models.CharField(max_length=255, primary_key=True)
+    username = models.CharField(max_length=255)
+    email = models.EmailField()
+    task_id = models.IntegerField()
+
+class AttachedFile(models.Model):
+    id = models.AutoField(primary_key=True)
+    loader = models.CharField(max_length=255)
+    type = models.CharField(max_length=255)
+    task_id = models.ForeignKey('Task', on_delete=models.CASCADE)
