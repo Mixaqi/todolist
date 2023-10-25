@@ -5,6 +5,7 @@ from django.db import models
 
 class ToDo(models.Model):
     id = models.AutoField(primary_key=True)
+    is_complete = models.BooleanField("Завершено", default=False)
     title = models.CharField("Название задания", max_length=500)
     user_id = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, blank=True)
 
