@@ -6,8 +6,11 @@ from urllib import response
 
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponse
 
+from django.shortcuts import render, redirect
+from .models import ToDo, AttachedFile
+from .forms import AttachedFileForm
 from .models import ToDo
 import csv
 import datetime
@@ -88,3 +91,18 @@ def export_excel(request: HttpRequest) -> HttpResponse:
 
     wb.save(response)
     return response
+
+
+def attach_file_to_task(request: HttpRequest, task_id: int) -> HttpResponse:
+    task = ToDo.objects.get(id=task_id)
+
+    if request.method == "POST":
+        form = AttachedFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            attached_file = form.save(commit=False)
+            attached_file.task = task
+            attached_file.save()
+            return redirect("task_detail", task_id=task_id)
+
+    form = AttachedFileForm()
+    return render(request, "attach_file_to_task.html", {"form": form, "task": task})
