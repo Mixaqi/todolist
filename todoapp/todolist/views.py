@@ -102,7 +102,7 @@ def attach_file_to_task(request: HttpRequest, task_id: int) -> HttpResponse:
             attached_file = form.save(commit=False)
             attached_file.task = task
             attached_file.save()
-            return redirect("task_detail", task_id=task_id)
+            return redirect("index")
 
     form = AttachedFileForm()
     return render(request, "attach_file_to_task.html", {"form": form, "task": task})
