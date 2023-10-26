@@ -95,18 +95,13 @@ def export_excel(request: HttpRequest) -> HttpResponse:
 
 def attach_file_to_task(request: HttpRequest, task_id: int) -> HttpResponse:
     task = ToDo.objects.get(id=task_id)
-
     if request.method == "POST":
         form = AttachedFileForm(request.POST, request.FILES)
         if form.is_valid():
             attached_file = form.save(commit=False)
             attached_file.task = task
-
-            if request.FILES.get('file'):
-                attached_file.save()
-                return redirect("index")
-            else:
-                form.add_error('file', 'Выберите файл')
+            attached_file.save()
+            return redirect("index")
     else:
         form = AttachedFileForm()
 
