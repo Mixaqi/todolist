@@ -101,8 +101,14 @@ def attach_file_to_task(request: HttpRequest, task_id: int) -> HttpResponse:
         if form.is_valid():
             attached_file = form.save(commit=False)
             attached_file.task = task
-            attached_file.save()
-            return redirect("index")
 
-    form = AttachedFileForm()
+            if request.FILES.get('file'):
+                attached_file.save()
+                return redirect("index")
+            else:
+                form.add_error('file', 'Выберите файл')
+    else:
+        form = AttachedFileForm()
+
     return render(request, "attach_file_to_task.html", {"form": form, "task": task})
+
