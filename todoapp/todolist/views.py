@@ -6,18 +6,20 @@ from urllib import response
 
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
+from django.shortcuts import get_object_or_404
+from django.conf import settings
 
 from django.shortcuts import render, redirect
 from .models import ToDo, AttachedFile
 from .forms import AttachedFileForm
 from .models import ToDo
 import csv
-import datetime
 import xlwt
+import os
 
 if TYPE_CHECKING:
-    from django.http import HttpRequest, HttpResponse
+    from django.http import HttpRequest, HttpResponse, FileResponse
 
 
 def index(request: HttpRequest) -> HttpResponse:
@@ -107,3 +109,8 @@ def attach_file_to_task(request: HttpRequest, task_id: int) -> HttpResponse:
 
     return render(request, "attach_file_to_task.html", {"form": form, "task": task})
 
+
+def download_file(request: HttpRequest, file_id: int) -> FileResponse:
+    attached_file = get_object_or_404(AttachedFile, id=file_id)
+    response = FileResponse(attached_file.file, as_attachment=True)
+    return response

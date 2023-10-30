@@ -39,7 +39,7 @@
 
                     <a class="ui negative basic button" href="{% url 'delete' todo.id %}">Удалить</a>
 
-                    <!-- Добавим форму для прикрепленных файлов -->
+                    <!-- Форма для прикрепления файла к задаче -->
                     <form class="ui form" action="{% url 'attach_file_to_task' todo.id %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="field">
@@ -48,6 +48,13 @@
                         </div>
                         <button class="ui teal basic button" type="submit">Прикрепить файл</button>
                     </form>
+
+                    <!-- Отображение прикрепленного файла (если есть) и ссылка для скачивания -->
+                    {% if todo.attachedfile_set.all %}
+                        {% for attached_file in todo.attachedfile_set.all %}
+                            <p>Прикрепленный файл: <a href="{{ attached_file.file.url }}" download>{{ attached_file.file.name }}</a></p>
+                        {% endfor %}
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>

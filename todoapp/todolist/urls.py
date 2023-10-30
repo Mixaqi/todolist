@@ -14,6 +14,10 @@ urlpatterns = [
     path("delete/<int:todo_id>/", views.delete, name="delete"),
     path("export_csv", views.export_csv, name = "export_csv"),
     path("export_excel", views.export_excel, name = "export_excel"),
-    path("attach_file/<int:task_id>/", views.attach_file_to_task, name="attach_file_to_task")
+    path("attach_file/<int:task_id>/", views.attach_file_to_task, name="attach_file_to_task"),
+    path('download_file/<int:file_id>/', views.download_file, name='download_file')
 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
