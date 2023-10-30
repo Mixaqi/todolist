@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from django.db import models
-from django import forms
 
 
 class ToDo(models.Model):
@@ -44,6 +43,6 @@ class AttachedFile(models.Model):
     # loader = models.ForeignKey('User', on_delete=models.CASCADE)
     # type = models.CharField(max_length=255)
     task = models.ForeignKey(
-        ToDo, on_delete=models.CASCADE
+        ToDo, on_delete=models.CASCADE,
     )  # Используем модель ToDo для связи
     file = models.FileField(upload_to="attached_files/", null=True)
