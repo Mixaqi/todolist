@@ -114,3 +114,8 @@ def download_file(request: HttpRequest, file_id: int) -> FileResponse:
     attached_file = get_object_or_404(AttachedFile, id=file_id)
     response = FileResponse(attached_file.file, as_attachment=True)
     return response
+
+def delete_attached_file(request: HttpRequest, attached_file_id: int):
+    attached_file = get_object_or_404(AttachedFile, id=attached_file_id)
+    attached_file.delete()
+    return redirect("index")

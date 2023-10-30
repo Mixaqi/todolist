@@ -49,10 +49,14 @@
                         <button class="ui teal basic button" type="submit">Прикрепить файл</button>
                     </form>
 
-                    <!-- Отображение прикрепленного файла (если есть) и ссылка для скачивания -->
+                    <!-- Отображение прикрепленных файлов (если есть) и ссылок для скачивания -->
                     {% if todo.attachedfile_set.all %}
                         {% for attached_file in todo.attachedfile_set.all %}
                             <p>Прикрепленный файл: <a href="{{ attached_file.file.url }}" download>{{ attached_file.file.name }}</a></p>
+                            <form class="ui form" action="{% url 'delete_attached_file' attached_file.id %}" method="post">
+                                {% csrf_token %}
+                                <button class="ui red basic button" type="submit">Удалить файл</button>
+                            </form>
                         {% endfor %}
                     {% endif %}
                 </div>
