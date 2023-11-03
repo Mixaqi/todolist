@@ -2,13 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 import datetime
-from urllib import response
 
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.conf import settings
 
 from django.shortcuts import render, redirect
 from .models import ToDo, AttachedFile
@@ -16,7 +14,6 @@ from .forms import AttachedFileForm
 from .models import ToDo
 import csv
 import xlwt
-import os
 
 if TYPE_CHECKING:
     from django.http import HttpRequest, HttpResponse, FileResponse
@@ -115,7 +112,8 @@ def download_file(request: HttpRequest, file_id: int) -> FileResponse:
     response = FileResponse(attached_file.file, as_attachment=True)
     return response
 
-def delete_attached_file(request: HttpRequest, attached_file_id: int):
+
+def delete_attached_file(request: HttpRequest, attached_file_id: int) -> HttpResponse:
     attached_file = get_object_or_404(AttachedFile, id=attached_file_id)
     attached_file.delete()
     return redirect("index")
