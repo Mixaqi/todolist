@@ -1,22 +1,20 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-import datetime
-
-from django.shortcuts import redirect, render
-from django.views.decorators.http import require_http_methods
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
-
-from django.shortcuts import render, redirect
-from .models import ToDo, AttachedFile
-from .forms import AttachedFileForm
-from .models import ToDo
 import csv
+import datetime
+from typing import TYPE_CHECKING
+
 import xlwt
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_http_methods
+
+from .forms import AttachedFileForm
+from .models import AttachedFile, ToDo
 
 if TYPE_CHECKING:
-    from django.http import HttpRequest, HttpResponse, FileResponse
+    from django.http import FileResponse, HttpRequest, HttpResponse
 
 
 def index(request: HttpRequest) -> HttpResponse:
@@ -117,3 +115,20 @@ def delete_attached_file(request: HttpRequest, attached_file_id: int) -> HttpRes
     attached_file = get_object_or_404(AttachedFile, id=attached_file_id)
     attached_file.delete()
     return redirect("index")
+
+
+def user_login(request: HttpRequest) -> HttpResponse:
+    if request.POST:
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user=user)
+            print("User successfully authenticated:", user)
+            return redirect("index")
+    return render(request, "todoapp/login.html")
+
+
+
+def user_logout(request: HttpRequest):
+    pass
