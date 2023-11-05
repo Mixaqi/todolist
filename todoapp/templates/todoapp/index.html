@@ -1,66 +1,79 @@
 {% extends "todoapp/layout.html" %}
 
 {% block content %}
-    <script>
-        var excelUrl = "{% url 'export_excel' %}";
-        var csvUrl = "{% url 'export_csv' %}";
-    </script>
 
-    <div class="ui two buttons">
-        <button class="ui button" onclick="window.location.href = excelUrl;">Export Excel</button>
-        <button class="ui button" onclick="window.location.href = csvUrl;">Export CSV</button>
+<nav class="navbar bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="container-fluid">Navbar</a>
+        {% if request.user.is_authenticated %}
+        <h3>{{ request.user }}</h3>
+        <a class = "navbar-brand" href="{% url 'logout' %}">Log Out</a>
+        {% else %}
+        <a class = "navbar-brand"  href = "{% url 'login' %}">Log In</a>
+        {% endif %}
     </div>
+</nav>
+<script>
+    var excelUrl = "{% url 'export_excel' %}"
+    var csvUrl = "{% url 'export_csv' %}"
+</script>
 
-    <div class="ui container" style="margin-top: 50px;">
-        <h1>Менеджер задач</h1>
+<div class="ui two buttons">
+    <button class="ui button" onclick="window.location.href = excelUrl;">Export Excel</button>
+    <button class="ui button" onclick="window.location.href = csvUrl;">Export CSV</button>
+</div>
 
-        <form class="ui form" action="{% url 'add' %}" method="post">
-            {% csrf_token %}
-            <div class="field">
-                <label>Новая задача</label>
-                <input type="text" name="title" placeholder="Введите название задачи">
-            </div>
-            <button class="ui teal basic button" type="submit">Добавить</button>
-        </form>
+<div class="ui container" style="margin-top: 50px;">
+    <h1>Менеджер задач</h1>
 
-        <div class="ui segments">
-            {% for todo in todo_list %}
-                <div class="ui segment">
-                    <p class="ui big header">{{ todo.title }}</p>
-
-                    <span class="ui label {% if not todo.is_complete %}gray{% else %}green{% endif %}">
-                        {% if not todo.is_complete %}Не завершено{% else %}Завершено{% endif %}
-                    </span>
-
-                    <a class="ui {% if not todo.is_complete %}primary basic{% else %}blue{% endif %} button"
-                        href="{% url 'update' todo.id %}">
-                        {% if not todo.is_complete %}Закрыть{% else %}Открыть{% endif %}
-                    </a>
-
-                    <a class="ui negative basic button" href="{% url 'delete' todo.id %}">Удалить</a>
-
-
-                    <form class="ui form" action="{% url 'attach_file_to_task' todo.id %}" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="field">
-                            <label for="file">Прикрепить файл</label>
-                            <input type="file" name="file" id="file" required>
-                        </div>
-                        <button class="ui teal basic button" type="submit">Прикрепить файл</button>
-                    </form>
-
-
-                    {% if todo.attachedfile_set.all %}
-                        {% for attached_file in todo.attachedfile_set.all %}
-                            <p>Прикрепленный файл: <a href="{{ attached_file.file.url }}" download>{{ attached_file.file.name }}</a></p>
-                            <form class="ui form" action="{% url 'delete_attached_file' attached_file.id %}" method="post">
-                                {% csrf_token %}
-                                <button class="ui red basic button" type="submit">Удалить файл</button>
-                            </form>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            {% endfor %}
+    <form class="ui form" action="{% url 'add' %}" method="post">
+        {% csrf_token %}
+        <div class="field">
+            <label>Новая задача</label>
+            <input type="text" name="title" placeholder="Введите название задачи">
         </div>
+        <button class="ui teal basic button" type="submit">Добавить</button>
+    </form>
+
+    <div class="ui segments">
+        {% for todo in todo_list %}
+        <div class="ui segment">
+            <p class="ui big header">{{ todo.title }}</p>
+
+            <span class="ui label {% if not todo.is_complete %}gray{% else %}green{% endif %}">
+                {% if not todo.is_complete %}Не завершено{% else %}Завершено{% endif %}
+            </span>
+
+            <a class="ui {% if not todo.is_complete %}primary basic{% else %}blue{% endif %} button"
+                href="{% url 'update' todo.id %}">
+                {% if not todo.is_complete %}Закрыть{% else %}Открыть{% endif %}
+            </a>
+
+            <a class="ui negative basic button" href="{% url 'delete' todo.id %}">Удалить</a>
+
+
+            <form class="ui form" action="{% url 'attach_file_to_task' todo.id %}" method="post"
+                enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="field">
+                    <label for="file">Прикрепить файл</label>
+                    <input type="file" name="file" id="file" required>
+                </div>
+                <button class="ui teal basic button" type="submit">Прикрепить файл</button>
+            </form>
+
+
+            {% if todo.attachedfile_set.all %}
+            {% for attached_file in todo.attachedfile_set.all %}
+            <p>Прикрепленный файл: <a href="{{ attached_file.file.url }}" download>{{ attached_file.file.name }}</a></p>
+            <form class="ui form" action="{% url 'delete_attached_file' attached_file.id %}" method="post">
+                {% csrf_token %}
+                <button class="ui red basic button" type="submit">Удалить файл</button>
+            </form>
+            {% endfor %}
+            {% endif %}
+        </div>
+        {% endfor %}
     </div>
+</div>
 {% endblock %}

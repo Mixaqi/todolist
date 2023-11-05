@@ -5,7 +5,7 @@ import datetime
 from typing import TYPE_CHECKING
 
 import xlwt
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods
@@ -124,11 +124,10 @@ def user_login(request: HttpRequest) -> HttpResponse:
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user=user)
-            print("User successfully authenticated:", user)
             return redirect("index")
     return render(request, "todoapp/login.html")
 
 
-
-def user_logout(request: HttpRequest):
-    pass
+def user_logout(request: HttpRequest) -> HttpResponse:
+    logout(request)
+    return redirect("login")
