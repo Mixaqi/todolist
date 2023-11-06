@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 import xlwt
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods
@@ -17,8 +18,10 @@ if TYPE_CHECKING:
     from django.http import FileResponse, HttpRequest, HttpResponse
 
 
+@login_required
 def index(request: HttpRequest) -> HttpResponse:
-    todos = ToDo.objects.all()
+    user = request.user  # Получить текущего пользователя
+    todos = ToDo.objects.filter(username=user)  # Фильтровать задачи только для текущего пользователя
     return render(
         request,
         "todoapp/index.html",
@@ -26,13 +29,16 @@ def index(request: HttpRequest) -> HttpResponse:
     )
 
 
+@login_required
 @require_http_methods(["POST"])
 def add(request: HttpRequest) -> HttpResponse:
     title = request.POST["title"]
     if len(title) != 0:
-        todo = ToDo(title=title)
+        user = request.user  # Получить текущего пользователя
+        todo = ToDo(title=title, username=user)
         todo.save()
     return redirect("index")
+
 
 
 def update(request: HttpRequest, todo_id: int) -> HttpResponse:
@@ -131,3 +137,17 @@ def user_login(request: HttpRequest) -> HttpResponse:
 def user_logout(request: HttpRequest) -> HttpResponse:
     logout(request)
     return redirect("login")
+
+
+# @login_required
+# def tasks_with_files(request: HttpRequest) -> HttpResponse:
+#     tasks = ToDo.objects.filter(user=request.user).select_related("attachedfile_set")
+#     return render(request, "index.html", {"tasks": tasks})
+
+
+# def save(self, *args, **kwargs) -> None:
+#     if not self.user:
+#         current_user = self._meta.model.user
+#         if current_user:
+#             self.user = current_user
+ #     super().save(*args, **kwargs)
