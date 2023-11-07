@@ -2,14 +2,17 @@ from __future__ import annotations
 
 import csv
 import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import xlwt
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
 from django.views.decorators.http import require_http_methods
+from django.views.generic import CreateView
 
 from .forms import AttachedFileForm
 from .models import AttachedFile, ToDo
@@ -21,7 +24,9 @@ if TYPE_CHECKING:
 @login_required
 def index(request: HttpRequest) -> HttpResponse:
     user = request.user  # Получить текущего пользователя
-    todos = ToDo.objects.filter(username=user)  # Фильтровать задачи только для текущего пользователя
+    todos = ToDo.objects.filter(
+        username=user,
+    )  # Фильтровать задачи только для текущего пользователя
     return render(
         request,
         "todoapp/index.html",
@@ -38,7 +43,6 @@ def add(request: HttpRequest) -> HttpResponse:
         todo = ToDo(title=title, username=user)
         todo.save()
     return redirect("index")
-
 
 
 def update(request: HttpRequest, todo_id: int) -> HttpResponse:
@@ -138,16 +142,13 @@ def user_logout(request: HttpRequest) -> HttpResponse:
     logout(request)
     return redirect("login")
 
-
-# @login_required
-# def tasks_with_files(request: HttpRequest) -> HttpResponse:
-#     tasks = ToDo.objects.filter(user=request.user).select_related("attachedfile_set")
-#     return render(request, "index.html", {"tasks": tasks})
-
-
-# def save(self, *args, **kwargs) -> None:
-#     if not self.user:
-#         current_user = self._meta.model.user
-#         if current_user:
-#             self.user = current_user
- #     super().save(*args, **kwargs)
+def user_register(request: HttpRequest) -> HttpResponse:
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("index")
+    else:
+        form = UserCreationForm()
+    return render(request, "todoapp/register.html", {"form": form})
