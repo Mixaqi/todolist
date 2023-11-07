@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_extensions",
     "todolist",
 ]
 
@@ -132,3 +133,8 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 LOGIN_URL = "/login"
+
+GRAPH_MODELS = {
+    "all_applications": True,
+    "group_models": True,
+}
